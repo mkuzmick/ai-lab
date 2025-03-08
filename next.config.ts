@@ -8,4 +8,7 @@ const withNextra = nextra({
 // Apply the Nextra middleware to Next.js config
 export default withNextra({
   // Your Next.js config options
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 });

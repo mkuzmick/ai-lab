@@ -1,0 +1,271 @@
+Below is an outline of how you can run **multiple separate “docs sections”** (each powered by Nextra) in the same Next.js site—e.g., an `/ai-docs` path and a `/media-docs` path. The key points are:
+
+1. Each docs section has its **own** directory of MDX files.
+2. Each docs section has its **own** catch-all route in `app/` to serve those files.
+3. (Optionally) Each docs section can have its **own** sidebar, theme configuration, or layout so they don’t mix.
+
+This approach requires **Nextra 4+** (for the App Router). Below is a conceptual guide.
+
+---
+
+## 1. Project Structure
+
+A possible structure with two distinct docs areas might look like:
+
+```
+app/
+├── ai-docs/
+│   ├── [[...mdxPath]]/
+│   │   └── page.jsx        # Catch-all for AI docs
+│   └── layout.jsx          # (optional) layout for AI docs
+├── media-docs/
+│   ├── [[...mdxPath]]/
+│   │   └── page.jsx        # Catch-all for Media docs
+│   └── layout.jsx          # (optional) layout for Media docs
+├── page.jsx                # your main site homepage (unrelated to docs)
+└── ...
+content/
+├── ai-docs/                # AI docs .mdx files
+│   ├── index.mdx
+│   └── subtopic/
+│       └── ...
+└── media-docs/             # Media docs .mdx files
+    ├── index.mdx
+    └── ...
+nextra.config.js            # or next.config.js
+theme.config.ai.tsx         # optional separate theme config
+theme.config.media.tsx      # optional separate theme config
+```
+
+- **`content/ai-docs/`**: MDX files for the AI docs section.
+- **`content/media-docs/`**: MDX files for the Media docs section.
+- **`app/ai-docs/[[...mdxPath]]/page.jsx`**: The Next.js route that handles all URLs under `/ai-docs/**`.
+- **`app/media-docs/[[...mdxPath]]/page.jsx`**: The Next.js route that handles all URLs under `/media-docs/**`.
+
+This way, each docs section is entirely separate—both the route prefix (i.e. `/ai-docs` vs. `/media-docs`) and the content directory.
+
+---
+
+## 2. Using Nextra in `next.config.js` (Single or Multiple Instances?)
+
+### **Option A: Single Nextra Config**
+
+It is often simplest to have **one** call to `nextra()` in your config, then let your route files specify which content directory to load. For example:
+
+```js
+// next.config.js
+const withNextra = require('nextra')({
+  theme: 'nextra-theme-docs',
+  // If you want a single default theme config, you can specify it here,
+  // but you can override it in each route if necessary.
+  themeConfig: './theme.config.shared.ts',
+});
+
+module.exports = withNextra({
+  // Normal Next.js config here
+});
+```
+
+Nextra 4 provides helper functions like `importPage()` and `generateStaticParamsFor()` that accept options for which subdirectory to read MDX from. That means in each catch-all route, you can point to a **different** content folder.
+
+### **Option B: Multiple Nextra Config Wrappers** (More advanced)
+
+If you really want each docs section to have _entirely separate Nextra config_ (e.g., different themes, different default docs folder, different `contentDirBasePath`), you can wrap your Next.js config multiple times or rely on environment variables. However, that’s more complex, and typically you can handle it with a single config plus separate route files. Below we’ll show the single-config approach.
+
+---
+
+## 3. Creating Separate Catch-all Routes
+
+In **`app/ai-docs/[[...mdxPath]]/page.jsx`**, do something like:
+
+```jsx
+// app/ai-docs/[[...mdxPath]]/page.jsx
+import { generateStaticParamsFor, importPage } from 'nextra/pages'
+import { useMDXComponents } from 'nextra/mdx'
+
+// 1) This tells Next.js which routes to statically pre-render
+export function generateStaticParams() {
+  return generateStaticParamsFor('mdxPath', {
+    // Instruct it to look under the "content/ai-docs" folder
+    dir: 'ai-docs'
+  })
+}
+
+// 2) Optional: generate metadata from frontmatter
+export async function generateMetadata({ params }) {
+  const { metadata } = await importPage(params.mdxPath, { dir: 'ai-docs' })
+  return metadata
+}
+
+const Wrapper = useMDXComponents().wrapper
+
+export default async function AiDocsPage({ params }) {
+  // 3) Dynamically import the correct MDX file from "content/ai-docs"
+  const { default: MdxContent, toc, metadata } = await importPage(params.mdxPath, {
+    dir: 'ai-docs'
+  })
+  return (
+    <Wrapper toc={toc} metadata={metadata}>
+      <MdxContent />
+    </Wrapper>
+  )
+}
+```
+
+- `dir: 'ai-docs'` tells Nextra to read from `content/ai-docs`.
+- The `[[...mdxPath]]` dynamic route ensures that `/ai-docs/*` is routed through this page.
+
+Then you do a **similar** file in **`app/media-docs/[[...mdxPath]]/page.jsx`**, but set `dir: 'media-docs'` to point to `content/media-docs`:
+
+```jsx
+// app/media-docs/[[...mdxPath]]/page.jsx
+import { generateStaticParamsFor, importPage } from 'nextra/pages'
+import { useMDXComponents } from 'nextra/mdx'
+
+export function generateStaticParams() {
+  return generateStaticParamsFor('mdxPath', {
+    dir: 'media-docs'
+  })
+}
+
+export async function generateMetadata({ params }) {
+  const { metadata } = await importPage(params.mdxPath, { dir: 'media-docs' })
+  return metadata
+}
+
+const Wrapper = useMDXComponents().wrapper
+
+export default async function MediaDocsPage({ params }) {
+  const { default: MdxContent, toc, metadata } = await importPage(params.mdxPath, {
+    dir: 'media-docs'
+  })
+  return (
+    <Wrapper toc={toc} metadata={metadata}>
+      <MdxContent />
+    </Wrapper>
+  )
+}
+```
+
+With that, you’ll have two separate docs sections:
+
+- **`/ai-docs`** → loads files from `content/ai-docs`
+- **`/media-docs`** → loads files from `content/media-docs`
+
+No overlap in sidebars or pages by default, since each folder is separate.
+
+---
+
+## 4. Using Different Sidebars (and Different Theme Configs if Needed)
+
+Each docs section can have its own `_meta.json` or `_meta.js` in its content folder to define how the sidebar is organized. For example:
+
+- `content/ai-docs/_meta.json` for the AI docs sidebar
+- `content/media-docs/_meta.json` for the Media docs sidebar
+
+That way, each section’s sidebar is built **only** from the files in that folder. You won’t see AI docs in the Media docs sidebar (and vice versa).
+
+### Example `_meta.json`
+
+```jsonc
+// content/ai-docs/_meta.json
+{
+  "index": {
+    "title": "AI Docs Home",
+    "type": "page"
+  },
+  "getting-started": {
+    "title": "Getting Started with AI"
+  },
+  "models": {
+    "title": "Language Models"
+  }
+}
+```
+
+```jsonc
+// content/media-docs/_meta.json
+{
+  "index": {
+    "title": "Media Docs Home",
+    "type": "page"
+  },
+  "setup": {
+    "title": "Media Setup"
+  }
+}
+```
+
+When Nextra builds the sidebar for `/ai-docs`, it only looks at `content/ai-docs/_meta.json`, so you’ll get the AI structure. For `/media-docs`, it will read `content/media-docs/_meta.json`. They remain separate.
+
+#### Different Theme Config Files
+
+If you want each docs site to have a different theme config (e.g., different top navigation, logo, project link, etc.), you can **skip** specifying `themeConfig` in the global `next.config.js` and instead set it per-route using a custom layout or wrapper.
+
+One approach:
+
+- Create a file `theme.config.ai.tsx` exporting the theme config for the AI docs, plus a `theme.config.media.tsx` for the media docs.
+- In each route’s code (the `app/ai-docs/[[...mdxPath]]/page.jsx` and `app/media-docs/[[...mdxPath]]/page.jsx`), you can dynamically import your theme config, or you can do it at the layout level.
+
+For example, if you want a custom layout for AI docs that references `theme.config.ai.tsx`, do:
+
+```jsx
+// app/ai-docs/layout.jsx
+import { Layout } from 'nextra-theme-docs'
+import themeConfig from '../../theme.config.ai'
+
+export default function AiDocsLayout({ children }) {
+  return (
+    <Layout
+      // custom properties
+      {...themeConfig}
+    >
+      {children}
+    </Layout>
+  )
+}
+```
+
+Similarly, for Media docs:
+
+```jsx
+// app/media-docs/layout.jsx
+import { Layout } from 'nextra-theme-docs'
+import mediaThemeConfig from '../../theme.config.media'
+
+export default function MediaDocsLayout({ children }) {
+  return (
+    <Layout {...mediaThemeConfig}>
+      {children}
+    </Layout>
+  )
+}
+```
+
+Thus each docs section can have a different layout “chrome,” different top nav items, different accent colors, etc.
+
+---
+
+## 5. Linking Between the Two Docs Sections
+
+If you want cross-links (e.g., a link from a page in AI docs to a page in Media docs), you **must** use an absolute path (in the sense of “starts with `/`”), like:
+
+```md
+[Go to Media Setup](/media-docs/setup)
+```
+
+Since they’re in entirely separate doc “sites,” a relative link like `../media-docs/setup` from within `ai-docs` content might not automatically resolve how you expect (and would likely break). So, absolute paths with the correct subpath are clearer. If the docs never need to cross-reference each other, just omit cross-links.
+
+---
+
+## 6. Conclusion: Yes, You Can Have Multiple Nextra Docs Subsites
+
+By creating:
+
+1. **Separate directories** for the content (e.g. `content/ai-docs` and `content/media-docs`).
+2. **Separate catch-all routes** (`app/ai-docs/[[...mdxPath]]` and `app/media-docs/[[...mdxPath]]`).
+3. (Optionally) **Separate layout** or theme config to keep the sidebars, navigation, etc. distinct.
+
+You effectively get **two independent documentation sections** under one Next.js project. Each section has its own sidebar, own MDX pages, and is accessed via a unique path (`/ai-docs` vs. `/media-docs`). They won’t intermingle content or sidebars.
+
+This is the recommended approach if you want them fully isolated but still within a single Next.js site. If you have any trouble, consult the [Nextra docs on the App Router](https://nextra.site/docs/docs-theme/upgrade-to-v2#app-router) for additional details on passing `dir` to `importPage` and `generateStaticParamsFor`.

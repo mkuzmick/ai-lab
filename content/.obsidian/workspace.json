@@ -1,0 +1,218 @@
+{
+  "main": {
+    "id": "177a2869eb4149f7",
+    "type": "split",
+    "children": [
+      {
+        "id": "6a00ea6b493bb8bc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "253bee3c0589667f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "resources/nextra/nextra-with-obsidian.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "nextra-with-obsidian"
+            }
+          },
+          {
+            "id": "e31fc9e8988ac5be",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "resources/nextra/nextra-in-subfolder.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "nextra-in-subfolder"
+            }
+          },
+          {
+            "id": "3853a65bf8630c8e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "resources/nextra/nextra-in-subfolder.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "nextra-in-subfolder"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "9974da0d1837278f",
+    "type": "split",
+    "children": [
+      {
+        "id": "1501463c9983e91e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "52bd73cd9949be71",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "ce7d811c426e0f54",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "18f9d56d66809689",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "debbc3718711c0bf",
+    "type": "split",
+    "children": [
+      {
+        "id": "90b18bc7e0ac35b8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "77b0dcec37e6138d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "resources/nextra/nextra-with-obsidian.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for nextra-with-obsidian"
+            }
+          },
+          {
+            "id": "bcd282cb0995a17c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "resources/nextra/nextra-with-obsidian.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from nextra-with-obsidian"
+            }
+          },
+          {
+            "id": "ece4b19427bfdd54",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "ca013ce94efc937e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "resources/nextra/nextra-with-obsidian.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of nextra-with-obsidian"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "3853a65bf8630c8e",
+  "lastOpenFiles": [
+    "resources/nextra/nextra-basics.md",
+    "resources/nextra/nextra-with-multiple-subfolders.mdx",
+    "posts/hello-world.mdx",
+    "resources/index.mdx",
+    "notes/index.mdx",
+    "posts",
+    "notes/test.md",
+    "resources/nextra/nextra-in-subfolder.md",
+    "resources/how-to-build-this/basic-setup.md",
+    "resources/how-to-build-this",
+    "resources/nextra/nextra-with-obsidian.md",
+    "resources/nextra/nextra-with-multiple-subfolders.md",
+    "notes/days/20250308.md",
+    "resources/nextra",
+    "Untitled.canvas"
+  ]
+}

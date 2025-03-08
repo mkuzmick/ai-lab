@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
+import nextra from "nextra";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+const withNextra = nextra({
+  contentDirBasePath: "/docs",
+});
 
-export default nextConfig;
+// Apply the Nextra middleware to Next.js config
+export default withNextra({
+  // Your Next.js config options
+});

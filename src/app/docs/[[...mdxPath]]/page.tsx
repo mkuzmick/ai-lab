@@ -23,7 +23,12 @@ interface PageProps {
   params: { mdxPath: string[] }
   [key: string]: any
 }
-export default async function Page({ params, ...rest }: { params: { mdxPath: string[] }; [key: string]: any }) {
+
+
+export default async function Page({
+  params,
+  ...rest
+}: { params: { mdxPath: string[] }; [key: string]: any }) {
   const result = await importPage(params.mdxPath)
   const { default: MDXContent, toc, metadata } = result
   return (
@@ -32,4 +37,3 @@ export default async function Page({ params, ...rest }: { params: { mdxPath: str
     </Wrapper>
   )
 }
-

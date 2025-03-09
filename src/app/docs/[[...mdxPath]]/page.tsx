@@ -9,31 +9,30 @@ export const generateStaticParams = generateStaticParamsFor('mdxPath')
 export async function generateMetadata({
   params,
 }: {
-  params: { mdxPath: string[] }
+  params: Promise<{ mdxPath: string[] }>
 }): Promise<any> {
-  const { metadata } = await importPage(params.mdxPath)
+  const { mdxPath } = await params
+  const { metadata } = await importPage(mdxPath)
   return metadata
 }
 
 // Pass an empty object to ensure an argument is provided.
 const Wrapper = getMDXComponents({}).wrapper
 
-// Define an interface for the page props.
-interface PageProps {
-  params: { mdxPath: string[] }
-  [key: string]: any
-}
-
-
 export default async function Page({
   params,
   ...rest
-}: { params: { mdxPath: string[] }; [key: string]: any }) {
-  const result = await importPage(params.mdxPath)
+}: {
+  params: Promise<{ mdxPath: string[] }>
+  [key: string]: any
+}) {
+  // Await the params to resolve the async Promise into an object.
+  const resolvedParams = await params
+  const result = await importPage(resolvedParams.mdxPath)
   const { default: MDXContent, toc, metadata } = result
   return (
     <Wrapper toc={toc} metadata={metadata}>
-      <MDXContent {...rest} params={params} />
+      <MDXContent {...rest} params={resolvedParams} />
     </Wrapper>
   )
 }

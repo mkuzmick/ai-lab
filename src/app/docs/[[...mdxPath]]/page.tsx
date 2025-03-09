@@ -24,14 +24,12 @@ interface PageProps {
   [key: string]: any
 }
 
-// Use React.ReactElement as the return type
-export default async function Page(props: PageProps): Promise<React.ReactElement> {
-  const { params } = props
+export default async function Page({ params, ...rest }: { params: { mdxPath: string[] } }) {
   const result = await importPage(params.mdxPath)
   const { default: MDXContent, toc, metadata } = result
   return (
     <Wrapper toc={toc} metadata={metadata}>
-      <MDXContent {...props} params={params} />
+      <MDXContent {...rest} params={params} />
     </Wrapper>
   )
 }
